@@ -5,30 +5,47 @@
 print("Installing packages...")
 !pip install -q torch numpy scipy matplotlib plotly pyyaml tqdm
 
-from google.colab import drive
+# Import basic modules first
 import os
+import sys
+import shutil
+
+# Mount Google Drive
+from google.colab import drive
 os.chdir('/content')
 drive.mount('/content/drive')
 
 print("✓ Setup complete")
 
-# CELL 2: Clone or upload project
-# Option A: If project is on GitHub
-# !git clone https://github.com/yourrepo/pinn-cooling.git
+# CELL 2: Clone project from GitHub
+print("Cloning PINN project from GitHub...")
 
-# Option B: If uploaded to Drive
-import shutil
-project_root = '/content/drive/My Drive/pinn-cooling'
-if not os.path.exists(project_root):
-    os.makedirs(project_root, exist_ok=True)
-    print(f"Created {project_root}")
-    print("Please upload project to Google Drive or use GitHub clone")
-else:
-    print(f"Project found at {project_root}")
+# Clone the repository
+!git clone https://github.com/tejaspnaik/ai_heat_sink_optimiztion.git /content/pinn-cooling
+
+# Set project root
+project_root = '/content/pinn-cooling'
+print(f"✓ Project cloned to {project_root}")
+
+# Alternatively, if already uploaded to Drive, uncomment below:
+# import shutil
+# project_root = '/content/drive/My Drive/ai_heat_sink_optimiztion'
+# if os.path.exists(project_root):
+#     print(f"✓ Project found at {project_root}")
+# else:
+#     print("Project not found on Drive. Using GitHub clone instead.")
 
 # CELL 3: Import project modules
-import sys
+# Verify project_root is defined
+if 'project_root' not in locals():
+    raise NameError("project_root not defined. Make sure to run CELL 2 first!")
+
+if not os.path.exists(project_root):
+    raise FileNotFoundError(f"Project not found at {project_root}. Check CELL 2.")
+
+# Add to path
 sys.path.insert(0, project_root)
+print(f"Added to path: {project_root}")
 
 import torch
 import numpy as np
